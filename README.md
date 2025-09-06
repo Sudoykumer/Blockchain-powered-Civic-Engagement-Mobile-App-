@@ -1,1 +1,1 @@
-# Blockchain-powered-Civic-Engagement-Mobile-App-
+# Blockchain-powered-Civic-Engagement-Web-App-

@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicChain - Blockchain Civic Engagement</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: #2563eb;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: white;
+            color: #2563eb;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            padding: 2rem;
+            min-height: calc(100vh - 140px);
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Login Section */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #2563eb;
+        }
+
+        .login-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            color: #666;
+        }
+
+        .login-buttons {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .login-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .login-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .login-btn.secondary {
+            background: #10b981;
+        }
+
+        .login-btn.secondary:hover {
+            background: #059669;
+        }
+
+        /* Feed */
+        .feed-header {
+            margin-bottom: 2rem;
+        }
+
+        .feed-title {
+            font-size: 2rem;
+            color: #2563eb;
+            margin-bottom: 0.5rem;
+        }
+
+        .feed-subtitle {
+            color: #666;
+        }
+
+        .post-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .post-sector {
+            background: #dbeafe;
+            color: #2563eb;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .post-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .post-content {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .media-placeholder {
+            background: #f3f4f6;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            color: #666;
+            margin: 1rem 0;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .blockchain-id {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: #10b981;
+            background: #ecfdf5;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: 1px solid #d1d5db;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: #f3f4f6;
+        }
+
+        /* Form */
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: #2563eb;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .upload-placeholder {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upload-placeholder:hover {
+            border-color: #2563eb;
+            background: #f8fafc;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* Notifications */
+        .notification-item {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .notification-icon.success {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .notification-icon.info {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .notification-icon.warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .notification-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Dashboard */
+        .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-table th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .dashboard-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-reviewed {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .status-resolved {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .acknowledge-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .acknowledge-btn:hover {
+            background: #059669;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-buttons {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .nav-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .section {
+                padding: 1rem;
+            }
+
+            .login-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .post-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .post-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .dashboard-table {
+                font-size: 0.9rem;
+            }
+
+            .dashboard-table th,
+            .dashboard-table td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <div class="logo">🏛️ CivicChain</div>
+            <div class="nav-buttons">
+                <button class="nav-btn" onclick="showSection('home')">Home</button>
+                <button class="nav-btn" onclick="showSection('report')">Report</button>
+                <button class="nav-btn" onclick="showSection('notifications')">Notifications</button>
+                <button class="nav-btn" onclick="showSection('dashboard')">Dashboard</button>
+                <button class="nav-btn" onclick="showSection('profile')">Profile</button>
+            </div>
+        </nav>
+
+        <!-- Login Section -->
+        <section id="login" class="section active">
+            <div class="login-container">
+                <h1 class="login-title">Welcome to CivicChain</h1>
+                <p class="login-subtitle">Blockchain-powered civic engagement for transparent governance</p>
+                <div class="login-buttons">
+                    <button class="login-btn" onclick="showSection('home')">🔐 Login with Wallet</button>
+                    <button class="login-btn secondary" onclick="showSection('home')">👤 Continue as Anonymous</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Home Feed Section -->
+        <section id="home" class="section">
+            <div class="feed-header">
+                <h1 class="feed-title">Community Feed</h1>
+                <p class="feed-subtitle">Latest reports and updates from your community</p>
+            </div>
+
+            <div class="post-card">
+                <div class="post-header">
+                    <span class="post-sector">🛣️ Road Infrastructure</span>
+                    <span class="post-date">2 hours ago</span>
+                </div>
+                <div class="post-content">
+                    <p>Large pothole on Main Street causing traffic delays and potential vehicle damage. Located near the intersection with Oak Avenue. Multiple residents have reported this issue.</p>
+                </div>
+                <div class="media-placeholder">
+                    📷 Image/Video Placeholder
+                </div>
+                <div class="post-footer">
+                    <span class="blockchain-id">TX: 0xABC123456789DEF</span>
+                    <div class="post-actions">
+                        <button class="action-btn">👍 Support (23)</button>
+                        <button class="action-btn">💬 Comment</button>
+                        <button class="action-btn">📤 Share</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <div class="post-header">
+                    <span class="post-sector">🏥 Healthcare</span>
+                    <span class="post-date">5 hours ago</span>
+                </div>
+                <div class="post-content">
+                    <p>Emergency room wait times at City General Hospital have increased significantly. Patients waiting 4+ hours for non-critical care. Staff shortage appears to be the main issue.</p>
+                </div>
+                <div class="post-footer">
+                    <span class="blockchain-id">TX: 0x456789ABCDEF123</span>
+                    <div class="post-actions">
+                        <button class="action-btn">👍 Support (45)</button>
+                        <button class="action-btn">💬 Comment</button>
+                        <button class="action-btn">📤 Share</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <div class="post-header">
+                    <span class="post-sector">🚇 Public Transport</span>
+                    <span class="post-date">1 day ago</span>
+                </div>
+                <div class="post-content">
+                    <p>Metro Line 2 experiencing frequent delays during rush hours. Commuters reporting 15-20 minute delays consistently. System needs maintenance and capacity improvements.</p>
+                </div>
+                <div class="media-placeholder">
+                    🎥 Video Placeholder - Rush Hour Delays
+                </div>
+                <div class="post-footer">
+                    <span class="blockchain-id">TX: 0x789ABCDEF123456</span>
+                    <div class="post-actions">
+                        <button class="action-btn">👍 Support (67)</button>
+                        <button class="action-btn">💬 Comment</button>
+                        <button class="action-btn">📤 Share</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <div class="post-header">
+                    <span class="post-sector">🌉 Infrastructure</span>
+                    <span class="post-date">2 days ago</span>
+                </div>
+                <div class="post-content">
+                    <p>Bridge lighting system on River Bridge has been malfunctioning for weeks. Several lights are out, creating safety concerns for pedestrians and cyclists during evening hours.</p>
+                </div>
+                <div class="post-footer">
+                    <span class="blockchain-id">TX: 0xDEF123456789ABC</span>
+                    <div class="post-actions">
+                        <button class="action-btn">👍 Support (34)</button>
+                        <button class="action-btn">💬 Comment</button>
+                        <button class="action-btn">📤 Share</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Report Section -->
+        <section id="report" class="section">
+            <div class="form-container">
+                <h1 class="form-title">Submit New Report</h1>
+                
+                <form id="reportForm">
+                    <div class="form-group">
+                        <label class="form-label">Report Description</label>
+                        <textarea class="form-textarea" placeholder="Describe the issue in detail..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Sector</label>
+                        <select class="form-select" required>
+                            <option value="">Select a sector...</option>
+                            <option value="road">🛣️ Road Infrastructure</option>
+                            <option value="hospital">🏥 Healthcare</option>
+                            <option value="construction">🏗️ Construction</option>
+                            <option value="metro">🚇 Public Transport</option>
+                            <option value="bridge">🌉 Bridge/Infrastructure</option>
+                            <option value="urban">🏙️ Urban Planning</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-input" placeholder="Enter location or address..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Upload Media</label>
+                        <div class="upload-placeholder">
+                            📎 Click to upload images or videos<br>
+                            <small>Supports JPG, PNG, MP4 (Max 10MB)</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="anonymous">
+                            <label for="anonymous">Submit anonymously</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Submit Report</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Notifications Section -->
+        <section id="notifications" class="section">
+            <h1 class="form-title">Notifications</h1>
+
+            <div class="notification-item">
+                <div class="notification-icon success">✅</div>
+                <div class="notification-content">
+                    <div class="notification-title">Report Submitted Successfully</div>
+                    <div class="notification-time">Your road infrastructure report has been recorded on the blockchain - 2 hours ago</div>
+                </div>
+            </div>
+
+            <div class="notification-item">
+                <div class="notification-icon info">🏛️</div>
+                <div class="notification-content">
+                    <div class="notification-title">Lawmakers Notified</div>
+                    <div class="notification-time">City Council has been automatically notified of your healthcare report - 5 hours ago</div>
+                </div>
+            </div>
+
+            <div class="notification-item">
+                <div class="notification-icon warning">⚠️</div>
+                <div class="notification-content">
+                    <div class="notification-title">Report Under Review</div>
+                    <div class="notification-time">Your metro system report is being reviewed by transport authorities - 1 day ago</div>
+                </div>
+            </div>
+
+            <div class="notification-item">
+                <div class="notification-icon success">🚨</div>
+                <div class="notification-content">
+                    <div class="notification-title">Emergency Services Contacted</div>
+                    <div class="notification-time">Your bridge safety report has been forwarded to emergency services - 2 days ago</div>
+                </div>
+            </div>
+
+            <div class="notification-item">
+                <div class="notification-icon info">📊</div>
+                <div class="notification-content">
+                    <div class="notification-title">Community Support Milestone</div>
+                    <div class="notification-time">Your report has received 50+ community votes - 3 days ago</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section">
+            <h1 class="form-title">Stakeholder Dashboard</h1>
+
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Report ID</th>
+                        <th>Sector</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Votes</th>
+                        <th>Blockchain TX</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#RPT-001</td>
+                        <td>🛣️ Road</td>
+                        <td>Pothole on Main Street</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>23</td>
+                        <td>0xABC123...</td>
+                        <td><button class="acknowledge-btn">Acknowledge</button></td>
+                    </tr>
+                    <tr>
+                        <td>#RPT-002</td>
+                        <td>🏥 Healthcare</td>
+                        <td>Hospital wait times</td>
+                        <td><span class="status-badge status-reviewed">Under Review</span></td>
+                        <td>45</td>
+                        <td>0x456789...</td>
+                        <td><button class="acknowledge-btn">Acknowledge</button></td>
+                    </tr>
+                    <tr>
+                        <td>#RPT-003</td>
+                        <td>🚇 Transport</td>
+                        <td>Metro delays</td>
+                        <td><span class="status-badge status-reviewed">Under Review</span></td>
+                        <td>67</td>
+                        <td>0x789ABC...</td>
+                        <td><button class="acknowledge-btn">Acknowledge</button></td>
+                    </tr>
+                    <tr>
+                        <td>#RPT-004</td>
+                        <td>🌉 Infrastructure</td>
+                        <td>Bridge lighting issues</td>
+                        <td><span class="status-badge status-resolved">Resolved</span></td>
+                        <td>34</td>
+                        <td>0xDEF123...</td>
+                        <td><button class="acknowledge-btn" disabled>Completed</button></td>
+                    </tr>
+                    <tr>
+                        <td>#RPT-005</td>
+                        <td>🏗️ Construction</td>
+                        <td>Noise complaints downtown</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>12</td>
+                        <td>0x123DEF...</td>
+                        <td><button class="acknowledge-btn">Acknowledge</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile" class="section">
+            <div class="form-container">
+                <h1 class="form-title">User Profile</h1>
+                
+                <div class="post-card">
+                    <h3>Account Information</h3>
+                    <p><strong>Status:</strong> Anonymous User</p>
+                    <p><strong>Reports Submitted:</strong> 3</p>
+                    <p><strong>Community Votes:</strong> 156</p>
+                    <p><strong>Blockchain Address:</strong> 0x742d35Cc6634C0532925a3b8D4C0C8b3C2e1d5e3</p>
+                </div>
+
+                <div class="post-card">
+                    <h3>Recent Activity</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 0.5rem 0; border-bottom: 1px solid #e5e7eb;">
+                            ✅ Submitted road infrastructure report - 2 hours ago
+                        </li>
+                        <li style="padding: 0.5rem 0; border-bottom: 1px solid #e5e7eb;">
+                            👍 Voted on healthcare report - 1 day ago
+                        </li>
+                        <li style="padding: 0.5rem 0; border-bottom: 1px solid #e5e7eb;">
+                            💬 Commented on metro system report - 2 days ago
+                        </li>
+                        <li style="padding: 0.5rem 0;">
+                            📤 Shared bridge safety report - 3 days ago
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>⚠️ Prototype only — Blockchain and reporting functions simulated. No real data is processed or stored.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Navigation functionality
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all nav buttons
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Add active class to clicked nav button
+            event.target.classList.add('active');
+        }
+
+        // Form submission
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simulate form submission
+            alert('Report submitted successfully! Your report has been recorded on the blockchain.');
+            
+            // Add a new post to the feed (simulate)
+            const newPost = `
+                <div class="post-card" style="border: 2px solid #10b981;">
+                    <div class="post-header">
+                        <span class="post-sector">🆕 Your Report</span>
+                        <span class="post-date">Just now</span>
+                    </div>
+                    <div class="post-content">
+                        <p><strong>New Report:</strong> ${document.querySelector('.form-textarea').value || 'Your submitted report'}</p>
+                    </div>
+                    <div class="post-footer">
+                        <span class="blockchain-id">TX: 0xNEW123456789ABC</span>
+                        <div class="post-actions">
+                            <button class="action-btn">👍 Support (1)</button>
+                            <button class="action-btn">💬 Comment</button>
+                            <button class="action-btn">📤 Share</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Reset form
+            this.reset();
+            
+            // Switch to home feed
+            showSection('home');
+            
+            // Add the new post at the top of the feed
+            const feedHeader = document.querySelector('.feed-header');
+            feedHeader.insertAdjacentHTML('afterend', newPost);
+        });
+
+        // Simulate acknowledge button functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('acknowledge-btn') && !e.target.disabled) {
+                e.target.textContent = 'Acknowledged';
+                e.target.style.background = '#6b7280';
+                e.target.disabled = true;
+                
+                // Update status
+                const row = e.target.closest('tr');
+                const statusBadge = row.querySelector('.status-badge');
+                statusBadge.textContent = 'Acknowledged';
+                statusBadge.className = 'status-badge status-reviewed';
+            }
+        });
+
+        // Simulate voting functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.textContent.includes('Support')) {
+                const currentVotes = parseInt(e.target.textContent.match(/\d+/)[0]);
+                const newVotes = currentVotes + 1;
+                e.target.textContent = `👍 Support (${newVotes})`;
+                e.target.style.background = '#dcfce7';
+                e.target.style.color = '#16a34a';
+            }
+        });
+
+        // Initialize - show login by default
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set first nav button as active when switching from login
+            const homeBtn = document.querySelector('.nav-btn');
+            if (homeBtn) {
+                homeBtn.addEventListener('click', function() {
+                    this.classList.add('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
